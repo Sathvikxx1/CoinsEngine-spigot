@@ -1,7 +1,9 @@
 package su.nightexpress.coinsengine.currency.operation.impl;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import su.nightexpress.coinsengine.CoinsEnginePlugin;
 import su.nightexpress.coinsengine.Placeholders;
 import su.nightexpress.coinsengine.api.currency.Currency;
 import su.nightexpress.coinsengine.config.Lang;
@@ -23,10 +25,12 @@ public class ResetOperation extends ConsoleOperation<CommandSender> {
 
     @Override
     protected void sendFeedback() {
-        Lang.COMMAND_RESET_DONE.getMessage().send(this.sender, replacer -> replacer
-            .replace(Placeholders.PLAYER_NAME, this.user.getName())
-            .replace(Placeholders.GENERIC_BALANCE, this.user.getBalance(this.currency))
-        );
+        Bukkit.getScheduler().runTaskAsynchronously(CoinsEnginePlugin.getProvidingPlugin(CoinsEnginePlugin.class), () -> {
+            Lang.COMMAND_RESET_DONE.getMessage().send(this.sender, replacer -> replacer
+                    .replace(Placeholders.PLAYER_NAME, this.user.getName())
+                    .replace(Placeholders.GENERIC_BALANCE, this.user.getBalance(this.currency))
+            );
+        });
     }
 
     @Override

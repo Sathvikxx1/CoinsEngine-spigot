@@ -109,6 +109,7 @@ public class CurrencyManager extends AbstractManager<CoinsEnginePlugin> {
     }
 
     private void writeLogs() {
+
         this.logger.write();
     }
 

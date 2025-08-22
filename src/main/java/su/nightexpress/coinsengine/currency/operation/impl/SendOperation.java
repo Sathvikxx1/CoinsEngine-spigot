@@ -1,7 +1,9 @@
 package su.nightexpress.coinsengine.currency.operation.impl;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nightexpress.coinsengine.CoinsEnginePlugin;
 import su.nightexpress.coinsengine.Placeholders;
 import su.nightexpress.coinsengine.api.currency.Currency;
 import su.nightexpress.coinsengine.config.Lang;
@@ -27,25 +29,29 @@ public class SendOperation extends ConsoleOperation<Player> {
 
     @Override
     protected void notifyUser() {
-        Player player = this.user.getPlayer();
-        if (player == null) return;
+        Bukkit.getScheduler().runTaskAsynchronously(CoinsEnginePlugin.getProvidingPlugin(CoinsEnginePlugin.class), () -> {
+            Player player = this.user.getPlayer();
+            if (player == null) return;
 
-        this.currency.sendPrefixed(Lang.CURRENCY_SEND_DONE_NOTIFY, player, replacer -> replacer
-            .replace(this.currency.replacePlaceholders())
-            .replace(Placeholders.GENERIC_AMOUNT, this.currency.format(this.amount))
-            .replace(Placeholders.GENERIC_BALANCE, this.user.getBalance(this.currency))
-            .replace(Placeholders.PLAYER_NAME, this.sender.getName())
-        );
+            this.currency.sendPrefixed(Lang.CURRENCY_SEND_DONE_NOTIFY, player, replacer -> replacer
+                    .replace(this.currency.replacePlaceholders())
+                    .replace(Placeholders.GENERIC_AMOUNT, this.currency.format(this.amount))
+                    .replace(Placeholders.GENERIC_BALANCE, this.user.getBalance(this.currency))
+                    .replace(Placeholders.PLAYER_NAME, this.sender.getName())
+            );
+        });
     }
 
     @Override
     protected void sendFeedback() {
-        this.currency.sendPrefixed(Lang.CURRENCY_SEND_DONE_SENDER, this.sender, replacer -> replacer
-            .replace(this.currency.replacePlaceholders())
-            .replace(Placeholders.GENERIC_AMOUNT, this.currency.format(this.amount))
-            .replace(Placeholders.GENERIC_BALANCE, this.fromUser.getBalance(this.currency))
-            .replace(Placeholders.PLAYER_NAME, this.user.getName())
-        );
+        Bukkit.getScheduler().runTaskAsynchronously(CoinsEnginePlugin.getProvidingPlugin(CoinsEnginePlugin.class), () -> {
+            this.currency.sendPrefixed(Lang.CURRENCY_SEND_DONE_SENDER, this.sender, replacer -> replacer
+                    .replace(this.currency.replacePlaceholders())
+                    .replace(Placeholders.GENERIC_AMOUNT, this.currency.format(this.amount))
+                    .replace(Placeholders.GENERIC_BALANCE, this.fromUser.getBalance(this.currency))
+                    .replace(Placeholders.PLAYER_NAME, this.user.getName())
+            );
+        });
     }
 
     @Override
